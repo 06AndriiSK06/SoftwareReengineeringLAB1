@@ -2,9 +2,9 @@ name: SonarCloud analysis
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
   workflow_dispatch:
 
 permissions:
@@ -16,21 +16,25 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: "8.0.x"
 
       - name: SonarScanner Begin
         run: |
           dotnet tool install --global dotnet-sonarscanner
           echo "$env:USERPROFILE\.dotnet\tools" >> $env:GITHUB_PATH
           dotnet sonarscanner begin `
-          /k:"06AndriiSK06_SoftwareReengineeringLAB1" `
-          /o:"06andriisk06" `
-          /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+            /k:"06AndriiSK06_SoftwareReengineeringLAB1" `
+            /o:"06andriisk06" `
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
         shell: pwsh
+
+      - name: Restore
+        run: dotnet restore SoftwareReengineeringLAB1.sln
 
       - name: Build
         run: dotnet build SoftwareReengineeringLAB1.sln -c Release --no-restore
